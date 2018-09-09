@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'firebaseUtil.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:simple_coverflow/simple_coverflow.dart';
 // FirebaseUser user;
 
 
@@ -85,14 +86,55 @@ class FirstPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("First screen"),
         ),
-          body: Column(children: 
-          [
-            Text("wat"),
-            Text("wat, but 2nd"),
-          ])
+          body: new StreamBuilder(
+            stream: Firestore.instance.collection("jonas").snapshots(),
+            builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
+              var documents = snapshot.data?.documents ?? [];
+
+              var trainingData = documents.map((snapshot) => TrainingSession.from(snapshot)).toList();
+
+
+              //return Text("${trainingData[0].day}");
+              //return Text("${trainingData[0].exercises}");
+
+              return TrainingPage(trainingData);
+            }
+          ),
     );
   }
 }
+
+class TrainingPage extends StatefulWidget {
+  final List<TrainingSession> allData;
+
+  TrainingPage(this.allData);
+
+  @override
+  State<TrainingPage> createState() => TrainingPageState();
+}
+
+class TrainingPageState extends State<TrainingPage> {
+  TrainingSession session;
+
+  @override
+  Widget build(BuildContext context) {
+    return CoverFlow(
+      itemCount: widget.allData.length,
+      itemBuilder: (context, index) {
+        var data = widget.allData[index];
+        var textStyle = TextStyle(fontSize: 22.0, color: Colors.deepOrangeAccent);
+        return Column(mainAxisAlignment: MainAxisAlignment.center
+        ,children: [
+          Text("Day: ${data.day}", style: textStyle),
+          Text("Exercise: ${data.exercises[0].name}", style: textStyle),
+          Text("Rpe: ${data.exercises[0].sets[0].rpe}", style: textStyle),
+          Text("Reps: ${data.exercises[0].sets[0].reps}", style: textStyle),
+        ]);
+      }
+    );
+  }
+}
+
 
 class SecondPage extends StatelessWidget {
   @override 
