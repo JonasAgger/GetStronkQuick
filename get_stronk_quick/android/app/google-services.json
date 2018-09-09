@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1015526402969",
+    "firebase_url": "https://get-stronk-quick.firebaseio.com",
+    "project_id": "get-stronk-quick",
+    "storage_bucket": "get-stronk-quick.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015526402969:android:39b1102efd9e0c5c",
+        "android_client_info": {
+          "package_name": "com.example.getstronkquick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1015526402969-v2q27c8p3lvp70nsc2didjh9vbbtv9um.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjg30O54GLM7GbtUDqhM8sn0QdmTP-ZYE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

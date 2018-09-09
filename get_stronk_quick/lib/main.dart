@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
+import 'firebaseUtil.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+// FirebaseUser user;
 
-void main() => runApp(new MyApp());
+
+main() async {
+  // user = await FirebaseAuth.instance.signInAnonymously();
+
+  runApp(MaterialApp(
+    title: "watApp",
+    home: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -72,7 +85,11 @@ class FirstPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("First screen"),
         ),
-          body: Container(color: Colors.orangeAccent)
+          body: Column(children: 
+          [
+            Text("wat"),
+            Text("wat, but 2nd"),
+          ])
     );
   }
 }

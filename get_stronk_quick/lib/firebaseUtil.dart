@@ -8,10 +8,7 @@ class TrainingSession {
   TrainingSession.data(this.reference, this.day, this.exercises)
   {
     this.day ??= "Monday";
-    this.exercises ??= [
-      Exercises(), 
-      Exercises()
-    ];
+    this.exercises ??= null;
   }
 
   factory TrainingSession.from(DocumentSnapshot snapshot) => 
@@ -38,9 +35,34 @@ class TrainingSession {
 class Exercises {
   String name;
   List<Sets> sets;
+
+  Exercises.data(this.name, this.sets)
+  {
+    this.name ??= "Squat";
+    this.sets ??= null;
+  }
+
+  factory Exercises.from(DocumentSnapshot snapshot) => 
+  Exercises.data(
+    snapshot.data["exercises"]["name"], 
+    snapshot.data["exercises"]["sets"],
+    );
 }
 
 class Sets {
   int rpe;
   int reps;
+
+  Sets.data(this.rpe, this.reps)
+  {
+    this.rpe ??= 9;
+    this.reps ??= 5;
+  }
+
+  factory Sets.from(DocumentSnapshot snapshot) => 
+  Sets.data(
+    snapshot.data["Sets"]["rpe"],
+    snapshot.data["Sets"]["reps"],
+    );
+
 }
