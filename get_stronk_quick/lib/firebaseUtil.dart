@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrainingSession {
-  final DocumentReference reference;
+  DocumentReference reference;
   String day;
   List<Exercises> exercises;
 
@@ -13,6 +13,8 @@ class TrainingSession {
     );
   }
 
+  TrainingSession(this.day, this.exercises);
+
   factory TrainingSession.from(DocumentSnapshot snapshot) => 
   TrainingSession.data(
     snapshot.reference,
@@ -21,15 +23,54 @@ class TrainingSession {
     );
 
   void save() {
-    reference.setData(toMap());
+
+    if (reference == null)
+    {
+      reference = Firestore.instance.collection("jonas").document();
+    }
+
+    Firestore.instance.runTransaction((Transaction ts) async {
+      var document = await ts.get(reference);
+
+      if (document.exists)
+      {
+        await ts.update(reference, toMap());
+      }
+      else
+      {
+        await ts.set(reference, toMap());
+      }
+    });
   }
+
+bool exists() {
+  return reference != null;
+}
+
+void delete() {
+  if (reference == null)
+    {
+      return;
+    }
+
+    Firestore.instance.runTransaction((Transaction ts) async {
+      var document = await ts.get(reference);
+
+      if (document.exists)
+      {
+        await ts.delete(reference);
+      }
+      else
+      {
+        return;
+      }
+    });
+}
 
   Map<String, dynamic> toMap() {
     return {
       "day": day,
-      "exercises": [
-        "harro", "harro2"
-      ]
+      "exercises": exercises.map((f) => f.toMap()).toList()
     };
   }
 }
@@ -37,6 +78,8 @@ class TrainingSession {
 class Exercises {
   String name;
   List<Sets> sets;
+
+  Exercises(this.name, this.sets);
 
   Exercises.data(this.name, int exerciseIndex, DocumentSnapshot snapshot)
   {
@@ -52,11 +95,20 @@ class Exercises {
     index,
     snapshot,
     );
+
+    Map<String, dynamic> toMap() {
+    return {
+      "name": name,
+      "sets": sets.map((f) => f.toMap()).toList()
+    };
+  }
 }
 
 class Sets {
   int rpe;
   int reps;
+
+
 
   Sets.data(this.rpe, this.reps)
   {
@@ -70,4 +122,10 @@ class Sets {
     snapshot.data["exercises"][exerciseIndex]["sets"][index]["reps"],
     );
 
+  Map<String, dynamic> toMap() {
+    return {
+      "rpe": rpe,
+      "reps": reps
+    };
+  }
 }

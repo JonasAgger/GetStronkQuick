@@ -89,6 +89,7 @@ class FirstPage extends StatefulWidget {
 class TrainingPageDay extends State<FirstPage>
 {
   int _dayIndex = 0;
+  int _maxIndex = 0;
 
   @override 
   Widget build(BuildContext context)
@@ -99,6 +100,8 @@ class TrainingPageDay extends State<FirstPage>
             builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
               var documents = snapshot.data?.documents ?? [];
 
+              _maxIndex = snapshot.data?.documents?.length ?? 0;
+              
               var trainingData = documents.map((snapshot) => TrainingSession.from(snapshot)).toList();
               if (trainingData.length == 0) return Text("Loading...");
               return TrainingPage(trainingData[_dayIndex]);
@@ -120,7 +123,7 @@ class TrainingPageDay extends State<FirstPage>
         ],),
         onPressed:() {
           print(_dayIndex);
-          _buttonPressed();
+          _button2Pressed();
           })
       ])
     );
@@ -129,15 +132,17 @@ class TrainingPageDay extends State<FirstPage>
   void _buttonPressed()
   {
     setState(() {
-    if (_dayIndex == 1)
-    {
-      _dayIndex = 0;
-    }
-    else
-    {
-      _dayIndex = 1;
-    }
+    if (_dayIndex + 1 >= _maxIndex) _dayIndex = 0;
+    else _dayIndex++;
     });
+  }
+
+  void _button2Pressed() async
+  {
+    var newData = new TrainingSession("watday", [ new Exercises("dedlifte", [new Sets.data(4, 5), new Sets.data(5, 5)] ),
+    new Exercises("Bicep curls", [new Sets.data(2, 12), new Sets.data(4, 12)])]);
+
+    if (newData.exists())
   }
 }
 
