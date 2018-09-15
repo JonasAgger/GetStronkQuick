@@ -78,34 +78,71 @@ int _currentIndex = 0;
   }
 }
 
-class FirstPage extends StatelessWidget {
+class FirstPage extends StatefulWidget {
+  @override
+    State<StatefulWidget> createState() {
+      // TODO: implement createState
+      return TrainingPageDay();
+    }
+}
+
+class TrainingPageDay extends State<FirstPage>
+{
+  int _dayIndex = 0;
+
   @override 
   Widget build(BuildContext context)
   {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("First screen"),
-        ),
-          body: new StreamBuilder(
+        body: new StreamBuilder(
             stream: Firestore.instance.collection("jonas").snapshots(),
             builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
               var documents = snapshot.data?.documents ?? [];
 
               var trainingData = documents.map((snapshot) => TrainingSession.from(snapshot)).toList();
-
-
-              //return Text("${trainingData[0].day}");
-              //return Text("${trainingData[0].exercises}");
-
-              return TrainingPage(trainingData);
+              if (trainingData.length == 0) return Text("Loading...");
+              return TrainingPage(trainingData[_dayIndex]);
             }
           ),
+          // New Stuff for navigating
+    bottomNavigationBar: ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+          FlatButton(child: Row(children: <Widget>[
+          Icon(Icons.access_alarm), Text("Finish Training")
+        ],),
+        onPressed:() {
+          print(_dayIndex);
+          _buttonPressed();
+          },),
+        FlatButton(child: Row(children: <Widget>[
+          Icon(Icons.access_alarm), Text("Skip Training"), 
+        ],),
+        onPressed:() {
+          print(_dayIndex);
+          _buttonPressed();
+          })
+      ])
     );
+  }
+
+  void _buttonPressed()
+  {
+    setState(() {
+    if (_dayIndex == 1)
+    {
+      _dayIndex = 0;
+    }
+    else
+    {
+      _dayIndex = 1;
+    }
+    });
   }
 }
 
 class TrainingPage extends StatefulWidget {
-  final List<TrainingSession> allData;
+  final TrainingSession allData;
 
   TrainingPage(this.allData);
 
@@ -118,20 +155,35 @@ class TrainingPageState extends State<TrainingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CoverFlow(
-      itemCount: widget.allData.length,
+    return new Scaffold(body: new CoverFlow(
+      itemCount: widget.allData.exercises.length,
       itemBuilder: (context, index) {
-        var data = widget.allData[index];
-        var textStyle = TextStyle(fontSize: 22.0, color: Colors.deepOrangeAccent);
-        return Column(mainAxisAlignment: MainAxisAlignment.center
-        ,children: [
-          Text("Day: ${data.day}", style: textStyle),
-          Text("Exercise: ${data.exercises[0].name}", style: textStyle),
-          Text("Rpe: ${data.exercises[0].sets[0].rpe}", style: textStyle),
-          Text("Reps: ${data.exercises[0].sets[0].reps}", style: textStyle),
-        ]);
-      }
+        var data = widget.allData;
+        return Scaffold(appBar: new AppBar(title: Text(data.exercises[index].name)),
+          body: new Card(child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _buildList(data.exercises[index].sets)
+          )
+        ));
+      },
+      dismissibleItems: false,
+    )
     );
+  }
+
+  List<ListTile> _buildList(List<Sets> exerciseList)
+  {
+    var list = new List<ListTile>();
+
+    for(int i = 0; i < exerciseList.length; i++)
+    {
+      var newTile = new ListTile(title: Text("Reps: " + exerciseList[i].reps.toString()),
+      subtitle: Text("Rpe: " + exerciseList[i].rpe.toString())
+      );
+      list.add(newTile);
+    }
+
+    return list;
   }
 }
 
