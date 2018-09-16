@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'firebaseUtil.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:simple_coverflow/simple_coverflow.dart';
-// FirebaseUser user;
-
+import "TrainingSession.dart";
+import "LoginPage.dart";
 
 main() async {
-  // user = await FirebaseAuth.instance.signInAnonymously();
-
+  
   runApp(MaterialApp(
     title: "watApp",
     home: MyApp(),
@@ -48,7 +46,9 @@ int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    if (false)//FireStoreWrapper.isLoggedIn())
+    {
+      return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: doSomething,
@@ -69,6 +69,12 @@ int _currentIndex = 0;
         ],
       ), 
     );
+    }
+    else
+    {
+      return LoginPage();
+    }
+    
   }
 
   void doSomething(int index) {
@@ -90,6 +96,7 @@ class TrainingPageDay extends State<FirstPage>
 {
   int _dayIndex = 0;
   int _maxIndex = 0;
+  List<TrainingSession> trainingData;
 
   @override 
   Widget build(BuildContext context)
@@ -102,7 +109,7 @@ class TrainingPageDay extends State<FirstPage>
 
               _maxIndex = snapshot.data?.documents?.length ?? 0;
               
-              var trainingData = documents.map((snapshot) => TrainingSession.from(snapshot)).toList();
+              trainingData = documents.map((snapshot) => TrainingSession.from(snapshot)).toList();
               if (trainingData.length == 0) return Text("Loading...");
               return TrainingPage(trainingData[_dayIndex]);
             }
@@ -142,7 +149,7 @@ class TrainingPageDay extends State<FirstPage>
     var newData = new TrainingSession("watday", [ new Exercises("dedlifte", [new Sets.data(4, 5), new Sets.data(5, 5)] ),
     new Exercises("Bicep curls", [new Sets.data(2, 12), new Sets.data(4, 12)])]);
 
-    if (newData.exists())
+    if (FireStoreWrapper.trainingSessionExists(newData)) return;
   }
 }
 
