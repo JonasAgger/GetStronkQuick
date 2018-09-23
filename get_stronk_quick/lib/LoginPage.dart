@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "firebaseUtil.dart";
+import "main.dart";
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -8,6 +9,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  
+
+
+  final emailController = new TextEditingController(text: "Wat@email.com");
+  final passwordController = new TextEditingController(text: "passwerd");
+
+  
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -22,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
-      initialValue: "wat@wat.com",
+      controller: emailController,
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -32,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
 
     final password = TextFormField(
       autofocus: false,
-      initialValue: 'passwerd',
       obscureText: true,
+      controller: passwordController,
       decoration: InputDecoration(
         hintText: 'Password',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -51,9 +59,11 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-            print(email.toString());
-            print(password.toString());
-            //FireStoreWrapper.logIn(email, password);
+            print(emailController.text);
+            print(passwordController.text);
+            FireStoreWrapper.logIn(emailController.text, passwordController.text);
+            // FireStoreWrapper.signUp("Wat@email.com", "password");
+            // Navigator.push(context, MyHomePage));
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),

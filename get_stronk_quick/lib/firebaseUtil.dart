@@ -10,12 +10,18 @@ class FireStoreWrapper
   {
     var futureUser = FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 
-    futureUser.then((value) => user = value);
+    futureUser.then((loggedInFireBaseUser) => user = loggedInFireBaseUser);
   }
 
   static void signUp(String email, String password)
   {
-    FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password).then((a) => print("user Created: " + a.uid));
+    FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password).then((firebaseuser) => print("user Created: " + firebaseuser.uid));
+  }
+
+  static void signOut()
+  {
+    FirebaseAuth.instance.signOut();
+    user = null;
   }
 
   static bool isLoggedIn()

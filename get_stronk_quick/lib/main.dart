@@ -46,7 +46,7 @@ int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    if (false)//FireStoreWrapper.isLoggedIn())
+    if (FireStoreWrapper.isLoggedIn())
     {
       return Scaffold(
       body: _children[_currentIndex],
@@ -144,12 +144,15 @@ class TrainingPageDay extends State<FirstPage>
     });
   }
 
-  void _button2Pressed() async
+  void _button2Pressed()
   {
-    var newData = new TrainingSession("watday", [ new Exercises("dedlifte", [new Sets.data(4, 5), new Sets.data(5, 5)] ),
-    new Exercises("Bicep curls", [new Sets.data(2, 12), new Sets.data(4, 12)])]);
+    FireStoreWrapper.signOut();
+    Navigator.pop(context);
 
-    if (FireStoreWrapper.trainingSessionExists(newData)) return;
+    // var newData = new TrainingSession("watday", [ new Exercises("dedlifte", [new Sets.data(4, 5), new Sets.data(5, 5)] ),
+    // new Exercises("Bicep curls", [new Sets.data(2, 12), new Sets.data(4, 12)])]);
+
+    // if (FireStoreWrapper.trainingSessionExists(newData)) return;
   }
 }
 
